@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/marti1125/jiracli/config"
+	"github.com/marti1125/jiracli/commands"
 	"github.com/urfave/cli"
 	"os"
 )
@@ -13,7 +13,7 @@ var (
 
 func init()  {
 	cl = cli.NewApp()
-	cl.Name = "Jira Tool"
+	cl.Name = "JiraAuth Tool"
 	cl.Usage = ""
 	cl.Version = ""
 	cl.Description = ""
@@ -21,7 +21,7 @@ func init()  {
 
 func main() {
 	cl.Commands = []cli.Command{
-		config.InitCommand(),
+		commands.Config(),
 	}
 
 	err := cl.Run(os.Args)
