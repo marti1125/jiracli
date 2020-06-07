@@ -22,6 +22,7 @@ func init()  {
 func main() {
 	cl.Commands = []cli.Command{
 		commands.Config(),
+		commands.Info(),
 	}
 
 	err := cl.Run(os.Args)

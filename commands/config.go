@@ -3,35 +3,46 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/marti1125/jiracli/jira"
 	"github.com/urfave/cli"
 	"io/ioutil"
 	"os"
 )
 
-type JiraAuth struct {
-	SiteUrl string `json:"site_url"`
-	Email   string `json:"email"`
-	Token   string `json:"token"`
-}
-
 func Config() cli.Command {
 	return cli.Command{
-		Name:  "commands",
-		Usage: "init commands",
+		Name:  "config",
+		Usage: "init config",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "site_url",
-				Usage:    "commands the site url of your jira site",
+				Usage:    "set site url of your jira site",
+				Required: true,
+			},
+			&cli.StringFlag{
+				Name:     "email",
+				Usage:    "set your email",
+				Required: true,
+			},
+			&cli.StringFlag{
+				Name:     "token",
+				Usage:    "set your token",
 				Required: true,
 			},
 		},
 		Action: func(ctx *cli.Context) error {
+
 			siteUrl := ctx.String("site_url")
-			if siteUrl != "" {
+			email := ctx.String("email")
+			token := ctx.String("token")
+
+			if siteUrl != "" || email != "" || token != "" {
 				fmt.Println("adding init configuration......")
 
-				c := JiraAuth{
+				c := jira.Auth{
 					SiteUrl: siteUrl,
+					Email:   email,
+					Token:   token,
 				}
 
 				j, err := json.MarshalIndent(c, "", "")
@@ -39,18 +50,16 @@ func Config() cli.Command {
 					fmt.Println(err)
 				}
 
-				configFile, err := os.Stat("commands.json")
-				if err != nil {
-					fmt.Println(err)
-				}
-				if configFile.Size() > 0 {
-					err = os.Remove("commands.json")
+				configFile, _ := os.Stat("config.json")
+
+				if configFile != nil && configFile.Size() > 0 {
+					err = os.Remove("config.json")
 					if err != nil {
 						fmt.Println(err)
 					}
 				}
 
-				err = ioutil.WriteFile("commands.json", j, 0644)
+				err = ioutil.WriteFile("config.json", j, 0644)
 				if err != nil {
 					fmt.Println(err)
 				}
